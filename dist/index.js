@@ -11,19 +11,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createNode = (createNodeArguments, graphClient, retrieveKeys) => __awaiter(this, void 0, void 0, function* () {
     checkRedisGraphClient(graphClient);
     const { label, data } = createNodeArguments;
-    return graphClient.query(`CREATE (n:${label}{${JSON.stringify(data)}}) RETURN n`)
+    return graphClient.query(exports.createNodeQueryStringGenerator(label, data))
         .then((res) => {
         return getNodeValue(res, retrieveKeys);
     });
 });
+exports.createNodeQueryStringGenerator = (label, data) => {
+    const queryString = `CREATE (n:${label} ${JSON.stringify(data)}) RETURN n`;
+    return queryString;
+};
 exports.getNodeByProperty = (getNodeArguments, graphClient, retrieveKeys) => __awaiter(this, void 0, void 0, function* () {
     checkRedisGraphClient(graphClient);
     const { label, propertyObject } = getNodeArguments;
-    return graphClient.query(`MATCH (n${label ? `${':' + label}` : ''}}) ${generateWhereStatement(propertyObject)} RETURN n`)
+    return graphClient.query(exports.createGetNodeByPropertyQueryStringGenerator(label, propertyObject))
         .then((res) => {
         return getNodeValue(res, retrieveKeys);
     });
 });
+exports.createGetNodeByPropertyQueryStringGenerator = (label, propertyObject) => {
+    const queryString = `MATCH (n${label ? `${':' + label}` : ''}) ${generateWhereStatement(propertyObject)} RETURN n`;
+    return queryString;
+};
 exports.relateNodes = ({ originNode, destinationNode, relationLabel }, graphClient) => __awaiter(this, void 0, void 0, function* () {
     checkRedisGraphClient(graphClient);
     const query = `MATCH (n1:${originNode.label} ${JSON.stringify(originNode.propertyObject)}), (n2:${destinationNode.label} ${JSON.stringify(destinationNode.propertyObject)}) CREATE (n1)-[r:${relationLabel}]->(n2) RETURN TYPE(r)`;
@@ -48,7 +56,7 @@ const generateWhereStatement = (propertiesToGenerateWhereStatementFor) => {
             queryString = `WHERE (n.${objectKey} = '${propertiesToGenerateWhereStatementFor[objectKey]}'`;
         }
         else {
-            queryString += `AND n.${objectKey} = '${propertiesToGenerateWhereStatementFor[objectKey]}'`;
+            queryString += ` AND n.${objectKey} = '${propertiesToGenerateWhereStatementFor[objectKey]}'`;
         }
     });
     queryString += ')';
