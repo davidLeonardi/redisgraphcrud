@@ -24,7 +24,6 @@ offers a functional CRUD API for RedisGraph by wrapping any redisgraph client `.
 
     Call `getNodeByProperty` with `retrieveKeys` set to a falsy value to not return anything after retrieval.
 
-
 `relateNodes(nodeProps, graphClient)`
 
   * `relatableNodeProps` -- an object containing the following keys:

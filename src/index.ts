@@ -33,10 +33,15 @@ export const createNode = async(createNodeArguments: CreateNodeArguments, graphC
     // Create a new node with a given label and a given data payload
     const {label, data} = createNodeArguments;
 
-    return graphClient.query(`CREATE (n:${label}{${JSON.stringify(data)}}) RETURN n`)
+    return graphClient.query(createNodeQueryStringGenerator(label, data))
     .then((res: any) => {
         return getNodeValue(res, retrieveKeys);
     });
+};
+
+export const createNodeQueryStringGenerator = (label: CreateNodeArguments['label'], data: CreateNodeArguments['data']) => {
+    const queryString = `CREATE (n:${label} ${JSON.stringify(data)}) RETURN n`;
+    return queryString;
 };
 
 // Get a node by any given property
@@ -45,10 +50,15 @@ export const getNodeByProperty = async (getNodeArguments: GetNodeArguments, grap
 
     const {label, propertyObject} = getNodeArguments;
 
-    return graphClient.query(`MATCH (n${label ? `${':' + label}` : ''}}) ${generateWhereStatement(propertyObject)} RETURN n`)
+    return graphClient.query(createGetNodeByPropertyQueryStringGenerator(label, propertyObject))
     .then((res: any) => {
         return getNodeValue(res, retrieveKeys);
     });
+};
+
+export const createGetNodeByPropertyQueryStringGenerator = (label: GetNodeArguments['label'], propertyObject: GetNodeArguments['propertyObject']) => {
+    const queryString = `MATCH (n${label ? `${':' + label}` : ''}) ${generateWhereStatement(propertyObject)} RETURN n`;
+    return queryString;
 };
 
 // Relate two nodes with a relation of a given type
@@ -80,7 +90,7 @@ const generateWhereStatement = (propertiesToGenerateWhereStatementFor: GetNodeAr
         if (i === 0) {
             queryString = `WHERE (n.${objectKey} = '${propertiesToGenerateWhereStatementFor[objectKey]}'`;
         } else {
-            queryString += `AND n.${objectKey} = '${propertiesToGenerateWhereStatementFor[objectKey]}'`;
+            queryString += ` AND n.${objectKey} = '${propertiesToGenerateWhereStatementFor[objectKey]}'`;
         }
     });
     queryString += ')';
