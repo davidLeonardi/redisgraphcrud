@@ -1,0 +1,44 @@
+{
+  "name": "redisgraphcrud",
+  "version": "0.0.1",
+  "description": "RedisGraph CRUD API which provides easy access to manipulation of nodes and edges",
+  "keywords": [
+    "redisgraph",
+    "API"
+  ],
+  "author": "David Leonardi",
+  "license": "MIT",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:dist": "yarn clean; yarn lint; yarn compile:build; yarn clean:dist; yarn compile:dist",
+    "build:watch": "cross-env NODE_ENV=production npm clean; npm lint; npm compile:build",
+    "build": "yarn clean; yarn lint; yarn compile:build",
+    "clean:dist": "rimraf dist",
+    "clean": "rimraf build coverage",
+    "compile:build": "tsc",
+    "compile:dist": "tsc -p tsconfig.dist.json",
+    "compile:watch": "tsc -w",
+    "lint": "tslint -c tslint.json src/**/*.ts",
+    "test": "mocha --opts mocha.opts"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^8.0.40",
+    "chai": "^4.2.0",
+    "mocha": "^6.0.2",
+    "rimraf": "^2.6.3",
+    "tslint": "^5.14.0",
+    "typescript": "^3.3.3333"
+  },
+  "dependencies": {
+    "redisgraph.js": "^1.1.4"
+  }
+}
