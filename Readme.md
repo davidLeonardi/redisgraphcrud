@@ -1,4 +1,4 @@
-# redisgraph.crud
+# redisgraphcrud
 
 offers a functional CRUD API for RedisGraph by wrapping any redisgraph client `.query()` interface
 
@@ -60,10 +60,13 @@ const destinationNode = {
     }
 }
 
+// Create a person Bob
 createNode(originNode, client, ['name', 'age']);
 
-destinationNode(destionationNode, client, ['name', 'age']);
+// Create a person called Mary
+createNode(destionationNode, client, ['name', 'age']);
 
+// Create a relation expressing that Bob knows Mary
 relateNodes({originNode: originNode, destionationNode: destinationNode, relationLabel: "knows"}, client);
 ~~~
 
