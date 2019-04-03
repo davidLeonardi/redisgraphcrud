@@ -7,7 +7,7 @@
     "API"
   ],
   "author": "David Leonardi",
-  "license": "MIT",
+	"license": "BSD 3",
   "engines": {
     "node": ">=6.0.0"
   },
@@ -37,8 +37,5 @@
     "rimraf": "^2.6.3",
     "tslint": "^5.14.0",
     "typescript": "^3.3.3333"
-  },
-  "dependencies": {
-    "redisgraph.js": "^1.1.4"
   }
 }
