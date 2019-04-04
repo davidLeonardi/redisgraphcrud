@@ -1,4 +1,5 @@
 import util = require('util');
+import {createGetNodeByPropertyQueryStringGenerator, createNodeQueryStringGenerator} from './utils';
 
 export interface RedisGraphClient {
     query(query: any): any;
@@ -37,14 +38,10 @@ export const createNode = async(createNodeArguments: CreateNodeArguments, graphC
 
     return graphClient.query(createNodeQueryStringGenerator(label, data))
     .then((res: any) => {
-        return getNodeValue(res, retrieveKeys);
+        return getNodeByProperty(createNodeArguments as unknown as GetNodeArguments, graphClient, retrieveKeys);
     });
 };
 
-export const createNodeQueryStringGenerator = (label: CreateNodeArguments['label'], data: CreateNodeArguments['data']) => {
-    const queryString = `CREATE (n:${label} ${util.inspect(data)}) RETURN n`;
-    return queryString;
-};
 
 // Get a node by any given property
 export const getNodeByProperty = async (getNodeArguments: GetNodeArguments, graphClient: RedisGraphClient, retrieveKeys: GetNodeValueArguments['keys']) => {
@@ -56,11 +53,6 @@ export const getNodeByProperty = async (getNodeArguments: GetNodeArguments, grap
     .then((res: any) => {
         return getNodeValue(res, retrieveKeys);
     });
-};
-
-export const createGetNodeByPropertyQueryStringGenerator = (label: GetNodeArguments['label'], propertyObject: GetNodeArguments['propertyObject']) => {
-    const queryString = `MATCH (n${label ? `${':' + label}` : ''}) ${generateWhereStatement(propertyObject)} RETURN n`;
-    return queryString;
 };
 
 // Relate two nodes with a relation of a given type
@@ -82,22 +74,6 @@ export const relateNodes = async ({ originNode, destinationNode, relationLabel}:
         console.log(result);
         return result;
     });
-};
-
-
-// Utility function to generate a filtering statement. A list of filtering criteria will be expanded into a WHERE ... AND ... statement
-const generateWhereStatement = (propertiesToGenerateWhereStatementFor: GetNodeArguments['propertyObject']) => {
-    let queryString = '';
-    Object.keys(propertiesToGenerateWhereStatementFor).forEach((objectKey, i) => {
-        if (i === 0) {
-            queryString = `WHERE (n.${objectKey} = '${propertiesToGenerateWhereStatementFor[objectKey]}'`;
-        } else {
-            queryString += ` AND n.${objectKey} = '${propertiesToGenerateWhereStatementFor[objectKey]}'`;
-        }
-    });
-    queryString += ')';
-
-    return queryString;
 };
 
 // Utility function to retrieve a specified set of values from a given record set.
