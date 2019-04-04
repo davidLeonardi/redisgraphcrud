@@ -17,4 +17,5 @@ interface RelationParameterTypes {
 export declare const createNode: (createNodeArguments: CreateNodeArguments, graphClient: RedisGraphClient, retrieveKeys: string[]) => Promise<any>;
 export declare const getNodeByProperty: (getNodeArguments: GetNodeArguments, graphClient: RedisGraphClient, retrieveKeys: string[]) => Promise<any>;
 export declare const relateNodes: ({ originNode, destinationNode, relationLabel }: RelationParameterTypes, graphClient: RedisGraphClient) => Promise<any>;
+export declare const getRelation: ({ originNode, destinationNode, relationLabel }: RelationParameterTypes, graphClient: RedisGraphClient) => Promise<any>;
 export {};
