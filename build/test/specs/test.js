@@ -5,7 +5,7 @@ const __1 = require("../..");
 describe('Basic Query String Generation', () => {
     it('generates the correct query for node creation', () => {
         const producedValue = __1.createNodeQueryStringGenerator('testLabel', { key: 'value' });
-        chai_1.expect(producedValue).to.be.equal('CREATE (n:testLabel {"key":"value"}) RETURN n');
+        chai_1.expect(producedValue).to.be.equal(`CREATE (n:testLabel { key: 'value' }) RETURN n`);
     });
     it('generates the correct query for node retrieval with one key', () => {
         const producedValue = __1.createGetNodeByPropertyQueryStringGenerator('testLabel', { key: 'value' });

@@ -1,3 +1,5 @@
+import util = require('util');
+
 export interface RedisGraphClient {
     query(query: any): any;
 }
@@ -40,7 +42,7 @@ export const createNode = async(createNodeArguments: CreateNodeArguments, graphC
 };
 
 export const createNodeQueryStringGenerator = (label: CreateNodeArguments['label'], data: CreateNodeArguments['data']) => {
-    const queryString = `CREATE (n:${label} ${JSON.stringify(data)}) RETURN n`;
+    const queryString = `CREATE (n:${label} ${util.inspect(data)}) RETURN n`;
     return queryString;
 };
 
@@ -65,7 +67,7 @@ export const createGetNodeByPropertyQueryStringGenerator = (label: GetNodeArgume
 export const relateNodes = async ({ originNode, destinationNode, relationLabel}: RelationParameterTypes, graphClient: RedisGraphClient) => {
     checkRedisGraphClient(graphClient);
 
-    const query = `MATCH (n1:${originNode.label} ${JSON.stringify(originNode.propertyObject)}), (n2:${destinationNode.label} ${JSON.stringify(destinationNode.propertyObject)}) CREATE (n1)-[r:${relationLabel}]->(n2) RETURN TYPE(r)`;
+    const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.propertyObject)}), (n2:${destinationNode.label} ${util.inspect(destinationNode.propertyObject)}) CREATE (n1)-[r:${relationLabel}]->(n2) RETURN TYPE(r)`;
 
     return graphClient.query(query)
     .then((res: any) => {

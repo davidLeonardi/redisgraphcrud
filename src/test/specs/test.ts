@@ -4,7 +4,7 @@ import { createNodeQueryStringGenerator, createGetNodeByPropertyQueryStringGener
 describe('Basic Query String Generation', () => {
   it('generates the correct query for node creation', () => {
     const producedValue = createNodeQueryStringGenerator('testLabel', {key: 'value'});
-    expect(producedValue).to.be.equal('CREATE (n:testLabel {"key":"value"}) RETURN n');
+    expect(producedValue).to.be.equal(`CREATE (n:testLabel { key: 'value' }) RETURN n`);
   });
 
   it('generates the correct query for node retrieval with one key', () => {

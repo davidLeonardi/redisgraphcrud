@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const util = require("util");
 exports.createNode = (createNodeArguments, graphClient, retrieveKeys) => __awaiter(this, void 0, void 0, function* () {
     checkRedisGraphClient(graphClient);
     const { label, data } = createNodeArguments;
@@ -17,7 +18,7 @@ exports.createNode = (createNodeArguments, graphClient, retrieveKeys) => __await
     });
 });
 exports.createNodeQueryStringGenerator = (label, data) => {
-    const queryString = `CREATE (n:${label} ${JSON.stringify(data)}) RETURN n`;
+    const queryString = `CREATE (n:${label} ${util.inspect(data)}) RETURN n`;
     return queryString;
 };
 exports.getNodeByProperty = (getNodeArguments, graphClient, retrieveKeys) => __awaiter(this, void 0, void 0, function* () {
@@ -34,7 +35,7 @@ exports.createGetNodeByPropertyQueryStringGenerator = (label, propertyObject) =>
 };
 exports.relateNodes = ({ originNode, destinationNode, relationLabel }, graphClient) => __awaiter(this, void 0, void 0, function* () {
     checkRedisGraphClient(graphClient);
-    const query = `MATCH (n1:${originNode.label} ${JSON.stringify(originNode.propertyObject)}), (n2:${destinationNode.label} ${JSON.stringify(destinationNode.propertyObject)}) CREATE (n1)-[r:${relationLabel}]->(n2) RETURN TYPE(r)`;
+    const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.propertyObject)}), (n2:${destinationNode.label} ${util.inspect(destinationNode.propertyObject)}) CREATE (n1)-[r:${relationLabel}]->(n2) RETURN TYPE(r)`;
     return graphClient.query(query)
         .then((res) => {
         let result = {};
