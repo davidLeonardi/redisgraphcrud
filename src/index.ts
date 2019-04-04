@@ -70,7 +70,7 @@ export const relateNodes = async ({ originNode, destinationNode, relationLabel}:
 export const getRelation = async ({ originNode, destinationNode, relationLabel}: RelationParameterTypes, graphClient: RedisGraphClient) => {
     checkRedisGraphClient(graphClient);
 
-    const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.data)})-[${relationLabel}]->(n2:${destinationNode.label} ${util.inspect(destinationNode.data)}) RETURN TYPE(r)`;
+    const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.data)})-[r:${relationLabel}]->(n2:${destinationNode.label} ${util.inspect(destinationNode.data)}) RETURN TYPE(r)`;
     return graphClient.query(query)
     .then((res: any) => {
         let result = {} as EstablishedRelationResult;
