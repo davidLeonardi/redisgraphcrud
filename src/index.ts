@@ -12,7 +12,7 @@ interface CreateNodeArguments {
 
 interface GetNodeArguments {
     label?: string;
-    propertyObject: object;
+    data: object;
 }
 
 interface GetNodeValueArguments {
@@ -38,7 +38,7 @@ export const createNode = async(createNodeArguments: CreateNodeArguments, graphC
 
     return graphClient.query(createNodeQueryStringGenerator(label, data))
     .then((res: any) => {
-        return getNodeByProperty(createNodeArguments as unknown as GetNodeArguments, graphClient, retrieveKeys);
+        return getNodeByProperty({label: label, data: data}, graphClient, retrieveKeys);
     });
 };
 
@@ -47,9 +47,9 @@ export const createNode = async(createNodeArguments: CreateNodeArguments, graphC
 export const getNodeByProperty = async (getNodeArguments: GetNodeArguments, graphClient: RedisGraphClient, retrieveKeys: GetNodeValueArguments['keys']) => {
     checkRedisGraphClient(graphClient);
 
-    const {label, propertyObject} = getNodeArguments;
+    const {label, data} = getNodeArguments;
 
-    return graphClient.query(createGetNodeByPropertyQueryStringGenerator(label, propertyObject))
+    return graphClient.query(createGetNodeByPropertyQueryStringGenerator(label, data))
     .then((res: any) => {
         return getNodeValue(res, retrieveKeys);
     });
@@ -59,7 +59,7 @@ export const getNodeByProperty = async (getNodeArguments: GetNodeArguments, grap
 export const relateNodes = async ({ originNode, destinationNode, relationLabel}: RelationParameterTypes, graphClient: RedisGraphClient) => {
     checkRedisGraphClient(graphClient);
 
-    const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.propertyObject)}), (n2:${destinationNode.label} ${util.inspect(destinationNode.propertyObject)}) CREATE (n1)-[r:${relationLabel}]->(n2) RETURN TYPE(r)`;
+    const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.data)}), (n2:${destinationNode.label} ${util.inspect(destinationNode.data)}) CREATE (n1)-[r:${relationLabel}]->(n2) RETURN TYPE(r)`;
 
     return graphClient.query(query)
     .then((res: any) => {

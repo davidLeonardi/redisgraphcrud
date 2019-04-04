@@ -7,7 +7,7 @@ interface CreateNodeArguments {
 
 interface GetNodeArguments {
     label?: string;
-    propertyObject: object;
+    data: object;
 }
 
 export const createNodeQueryStringGenerator = (label: CreateNodeArguments['label'], data: CreateNodeArguments['data']) => {
@@ -15,22 +15,24 @@ export const createNodeQueryStringGenerator = (label: CreateNodeArguments['label
     return queryString;
 };
 
-export const createGetNodeByPropertyQueryStringGenerator = (label: GetNodeArguments['label'], propertyObject: GetNodeArguments['propertyObject']) => {
-    const queryString = `MATCH (n${label ? `${':' + label}` : ''}) ${generateWhereStatement(propertyObject)} RETURN n`;
+export const createGetNodeByPropertyQueryStringGenerator = (label: GetNodeArguments['label'], data: GetNodeArguments['data']) => {
+    const queryString = `MATCH (n${label ? `${':' + label}` : ''}) ${generateWhereStatement(data)} RETURN n`;
     return queryString;
 };
 
 // Utility function to generate a filtering statement. A list of filtering criteria will be expanded into a WHERE ... AND ... statement
-const generateWhereStatement = (propertiesToGenerateWhereStatementFor: GetNodeArguments['propertyObject']) => {
+const generateWhereStatement = (propertiesToGenerateWhereStatementFor: GetNodeArguments['data']) => {
     let queryString = '';
-    Object.keys(propertiesToGenerateWhereStatementFor).forEach((objectKey, i) => {
-        if (i === 0) {
-            queryString = `WHERE (n.${objectKey} = '${propertiesToGenerateWhereStatementFor[objectKey]}'`;
-        } else {
-            queryString += ` AND n.${objectKey} = '${propertiesToGenerateWhereStatementFor[objectKey]}'`;
-        }
-    });
-    queryString += ')';
+    if (propertiesToGenerateWhereStatementFor) {
+        Object.keys(propertiesToGenerateWhereStatementFor).forEach((objectKey, i) => {
+            if (i === 0) {
+                queryString = `WHERE (n.${objectKey} = '${propertiesToGenerateWhereStatementFor[objectKey]}'`;
+            } else {
+                queryString += ` AND n.${objectKey} = '${propertiesToGenerateWhereStatementFor[objectKey]}'`;
+            }
+        });
+        queryString += ')';
+    }
 
     return queryString;
 };

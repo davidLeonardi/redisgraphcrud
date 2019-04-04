@@ -17,14 +17,14 @@ exports.createNode = (createNodeArguments, graphClient, retrieveKeys) => __await
     const { label, data } = createNodeArguments;
     return graphClient.query(utils_1.createNodeQueryStringGenerator(label, data))
         .then((res) => {
-        return exports.getNodeByProperty(createNodeArguments, graphClient, retrieveKeys);
+        return exports.getNodeByProperty({ label: label, data: data }, graphClient, retrieveKeys);
     });
 });
 // Get a node by any given property
 exports.getNodeByProperty = (getNodeArguments, graphClient, retrieveKeys) => __awaiter(this, void 0, void 0, function* () {
     checkRedisGraphClient(graphClient);
-    const { label, propertyObject } = getNodeArguments;
-    return graphClient.query(utils_1.createGetNodeByPropertyQueryStringGenerator(label, propertyObject))
+    const { label, data } = getNodeArguments;
+    return graphClient.query(utils_1.createGetNodeByPropertyQueryStringGenerator(label, data))
         .then((res) => {
         return getNodeValue(res, retrieveKeys);
     });
@@ -32,7 +32,7 @@ exports.getNodeByProperty = (getNodeArguments, graphClient, retrieveKeys) => __a
 // Relate two nodes with a relation of a given type
 exports.relateNodes = ({ originNode, destinationNode, relationLabel }, graphClient) => __awaiter(this, void 0, void 0, function* () {
     checkRedisGraphClient(graphClient);
-    const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.propertyObject)}), (n2:${destinationNode.label} ${util.inspect(destinationNode.propertyObject)}) CREATE (n1)-[r:${relationLabel}]->(n2) RETURN TYPE(r)`;
+    const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.data)}), (n2:${destinationNode.label} ${util.inspect(destinationNode.data)}) CREATE (n1)-[r:${relationLabel}]->(n2) RETURN TYPE(r)`;
     return graphClient.query(query)
         .then((res) => {
         let result = {};

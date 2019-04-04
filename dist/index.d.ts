@@ -7,7 +7,7 @@ interface CreateNodeArguments {
 }
 interface GetNodeArguments {
     label?: string;
-    propertyObject: object;
+    data: object;
 }
 interface RelationParameterTypes {
     originNode: GetNodeArguments;

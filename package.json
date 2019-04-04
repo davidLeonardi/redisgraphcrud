@@ -1,6 +1,6 @@
 {
   "name": "redisgraphcrud",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "RedisGraph CRUD API which provides easy access to manipulation of nodes and edges",
   "keywords": [
     "redisgraph",
