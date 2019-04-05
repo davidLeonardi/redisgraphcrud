@@ -3,7 +3,7 @@ export interface RedisGraphClient {
 }
 interface CreateNodeArguments {
     label: string;
-    data: any;
+    data?: any;
 }
 interface GetNodeArguments {
     label?: string;

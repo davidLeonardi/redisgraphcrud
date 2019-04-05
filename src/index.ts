@@ -7,7 +7,7 @@ export interface RedisGraphClient {
 
 interface CreateNodeArguments {
     label: string;
-    data: any;
+    data?: any;
 }
 
 interface GetNodeArguments {
@@ -74,14 +74,12 @@ export const getRelation = async ({ originNode, destinationNode, relationLabel}:
     return graphClient.query(query)
     .then((res: any) => {
         let result = {} as EstablishedRelationResult;
-        console.log(res);
         while (res.hasNext()) {
             const record = res.next();
             result = {
                 relationType: record.getString('TYPE(r)')
             };
         }
-        console.log(result);
         return result;
     });
 };

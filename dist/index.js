@@ -40,14 +40,12 @@ exports.getRelation = ({ originNode, destinationNode, relationLabel }, graphClie
     return graphClient.query(query)
         .then((res) => {
         let result = {};
-        console.log(res);
         while (res.hasNext()) {
             const record = res.next();
             result = {
                 relationType: record.getString('TYPE(r)')
             };
         }
-        console.log(result);
         return result;
     });
 });
