@@ -32,7 +32,7 @@ exports.getNodeByProperty = (getNodeArguments, graphClient, retrieveKeys) => __a
 // Relate two nodes with a relation of a given type
 exports.relateNodes = ({ originNode, destinationNode, relationLabel }, graphClient) => __awaiter(this, void 0, void 0, function* () {
     checkRedisGraphClient(graphClient);
-    const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.data)}), (n2:${destinationNode.label} ${util.inspect(destinationNode.data)}) CREATE (n1)-[r:${relationLabel}]->(n2)`;
+    const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.data)}), (n2:${destinationNode.label} ${destinationNode.data && util.inspect(destinationNode.data)}) CREATE (n1)-[r:${relationLabel}]->(n2)`;
     return graphClient.query(query)
         .then(() => {
         return exports.getRelation({ originNode, destinationNode, relationLabel }, graphClient);
@@ -40,7 +40,7 @@ exports.relateNodes = ({ originNode, destinationNode, relationLabel }, graphClie
 });
 exports.getRelation = ({ originNode, destinationNode, relationLabel }, graphClient) => __awaiter(this, void 0, void 0, function* () {
     checkRedisGraphClient(graphClient);
-    const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.data)})-[r:${relationLabel}]->(n2:${destinationNode.label} ${util.inspect(destinationNode.data)}) RETURN n1, n2, TYPE(r)`;
+    const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.data)})-[r:${relationLabel}]->(n2:${destinationNode.label} ${destinationNode.data && util.inspect(destinationNode.data)}) RETURN n1, n2, TYPE(r)`;
     return graphClient.query(query)
         .then((res) => {
         let result = {};

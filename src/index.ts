@@ -59,7 +59,7 @@ export const getNodeByProperty = async (getNodeArguments: GetNodeArguments, grap
 export const relateNodes = async ({ originNode, destinationNode, relationLabel}: RelationParameterTypes, graphClient: RedisGraphClient) => {
     checkRedisGraphClient(graphClient);
 
-    const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.data)}), (n2:${destinationNode.label} ${util.inspect(destinationNode.data)}) CREATE (n1)-[r:${relationLabel}]->(n2)`;
+    const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.data)}), (n2:${destinationNode.label} ${destinationNode.data && util.inspect(destinationNode.data)}) CREATE (n1)-[r:${relationLabel}]->(n2)`;
 
     return graphClient.query(query)
     .then(() => {
@@ -70,7 +70,7 @@ export const relateNodes = async ({ originNode, destinationNode, relationLabel}:
 export const getRelation = async ({ originNode, destinationNode, relationLabel}: RelationParameterTypes, graphClient: RedisGraphClient) => {
     checkRedisGraphClient(graphClient);
 
-    const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.data)})-[r:${relationLabel}]->(n2:${destinationNode.label} ${util.inspect(destinationNode.data)}) RETURN n1, n2, TYPE(r)`;
+    const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.data)})-[r:${relationLabel}]->(n2:${destinationNode.label} ${destinationNode.data && util.inspect(destinationNode.data)}) RETURN n1, n2, TYPE(r)`;
     return graphClient.query(query)
     .then((res: any) => {
         let result = {} as EstablishedRelationResult;
