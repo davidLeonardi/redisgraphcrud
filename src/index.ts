@@ -27,6 +27,8 @@ interface RelationParameterTypes {
 
 interface EstablishedRelationResult {
     relationType: string;
+    originId: string;
+    destinationId: string;
 }
 
 // Create a new node
@@ -77,7 +79,9 @@ export const getRelation = async ({ originNode, destinationNode, relationLabel}:
         while (res.hasNext()) {
             const record = res.next();
             result = {
-                relationType: record.getString('TYPE(r)')
+                relationType: record.getString('TYPE(r)'),
+                originId: record.getString('n1.id'),
+                destinationId: record.getString('n2.id')
             };
         }
         return result;

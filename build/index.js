@@ -47,7 +47,9 @@ exports.getRelation = ({ originNode, destinationNode, relationLabel }, graphClie
         while (res.hasNext()) {
             const record = res.next();
             result = {
-                relationType: record.getString('TYPE(r)')
+                relationType: record.getString('TYPE(r)'),
+                originId: record.getString('n1.id'),
+                destinationId: record.getString('n2.id')
             };
         }
         return result;
