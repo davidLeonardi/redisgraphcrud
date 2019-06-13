@@ -8,6 +8,7 @@ interface CreateNodeArguments {
 interface GetNodeArguments {
     label?: string;
     data: object;
+    keysToReturn: string[];
 }
 
 export const createNodeQueryStringGenerator = (label: CreateNodeArguments['label'], data: CreateNodeArguments['data']) => {
@@ -15,8 +16,17 @@ export const createNodeQueryStringGenerator = (label: CreateNodeArguments['label
     return queryString;
 };
 
-export const createGetNodeByPropertyQueryStringGenerator = (label: GetNodeArguments['label'], data: GetNodeArguments['data']) => {
-    const queryString = `MATCH (n${label ? `${':' + label}` : ''}) ${generateWhereStatement(data)} RETURN n`;
+export const createGetNodeByPropertyQueryStringGenerator = (label: GetNodeArguments['label'], data: GetNodeArguments['data'], keysToReturn: GetNodeArguments['keysToReturn']) => {
+    let keysToReturnStringList;
+
+    keysToReturn.forEach((key, index, oringinalList) => {
+        keysToReturnStringList = keysToReturnStringList + key;
+        if (index !== oringinalList.length) {
+            keysToReturnStringList += ', ';
+        }
+    });
+
+    const queryString = `MATCH (n${label ? `${':' + label}` : ''}) ${generateWhereStatement(data)} RETURN ${keysToReturnStringList}`;
     return queryString;
 };
 

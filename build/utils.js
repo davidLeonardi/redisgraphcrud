@@ -5,8 +5,15 @@ exports.createNodeQueryStringGenerator = (label, data) => {
     const queryString = `CREATE (n:${label} ${util.inspect(data)})`;
     return queryString;
 };
-exports.createGetNodeByPropertyQueryStringGenerator = (label, data) => {
-    const queryString = `MATCH (n${label ? `${':' + label}` : ''}) ${generateWhereStatement(data)} RETURN n`;
+exports.createGetNodeByPropertyQueryStringGenerator = (label, data, keysToReturn) => {
+    let keysToReturnStringList;
+    keysToReturn.forEach((key, index, oringinalList) => {
+        keysToReturnStringList = keysToReturnStringList + key;
+        if (index !== oringinalList.length) {
+            keysToReturnStringList += ', ';
+        }
+    });
+    const queryString = `MATCH (n${label ? `${':' + label}` : ''}) ${generateWhereStatement(data)} RETURN ${keysToReturnStringList}`;
     return queryString;
 };
 // Utility function to generate a filtering statement. A list of filtering criteria will be expanded into a WHERE ... AND ... statement

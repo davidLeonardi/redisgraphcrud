@@ -1,13 +1,13 @@
 {
   "name": "redisgraphcrud",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "RedisGraph CRUD API which provides easy access to manipulation of nodes and edges",
   "keywords": [
     "redisgraph",
     "API"
   ],
   "author": "David Leonardi",
-	"license": "BSD-3-Clause",
+  "license": "BSD-3-Clause",
   "engines": {
     "node": ">=6.0.0"
   },

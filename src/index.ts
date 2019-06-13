@@ -1,5 +1,5 @@
 import util = require('util');
-import {createGetNodeByPropertyQueryStringGenerator, createNodeQueryStringGenerator} from './utils';
+import { createGetNodeByPropertyQueryStringGenerator, createNodeQueryStringGenerator } from './utils';
 
 export interface RedisGraphClient {
     query(query: any): any;
@@ -32,16 +32,16 @@ interface EstablishedRelationResult {
 }
 
 // Create a new node
-export const createNode = async(createNodeArguments: CreateNodeArguments, graphClient: RedisGraphClient, retrieveKeys: GetNodeValueArguments['keys']) => {
+export const createNode = async (createNodeArguments: CreateNodeArguments, graphClient: RedisGraphClient, retrieveKeys: GetNodeValueArguments['keys']) => {
     checkRedisGraphClient(graphClient);
 
     // Create a new node with a given label and a given data payload
-    const {label, data} = createNodeArguments;
+    const { label, data } = createNodeArguments;
 
     return graphClient.query(createNodeQueryStringGenerator(label, data))
-    .then((res: any) => {
-        return getNodeByProperty({label: label, data: data}, graphClient, retrieveKeys);
-    });
+        .then((res: any) => {
+            return getNodeByProperty({ label: label, data: data }, graphClient, retrieveKeys);
+        });
 };
 
 
@@ -49,43 +49,43 @@ export const createNode = async(createNodeArguments: CreateNodeArguments, graphC
 export const getNodeByProperty = async (getNodeArguments: GetNodeArguments, graphClient: RedisGraphClient, retrieveKeys: GetNodeValueArguments['keys']) => {
     checkRedisGraphClient(graphClient);
 
-    const {label, data} = getNodeArguments;
+    const { label, data } = getNodeArguments;
 
-    return graphClient.query(createGetNodeByPropertyQueryStringGenerator(label, data))
-    .then((res: any) => {
-        return getNodeValue(res, retrieveKeys);
-    });
+    return graphClient.query(createGetNodeByPropertyQueryStringGenerator(label, data, retrieveKeys))
+        .then((res: any) => {
+            return getNodeValue(res, retrieveKeys);
+        });
 };
 
 // Relate two nodes with a relation of a given type
-export const relateNodes = async ({ originNode, destinationNode, relationLabel}: RelationParameterTypes, graphClient: RedisGraphClient) => {
+export const relateNodes = async ({ originNode, destinationNode, relationLabel }: RelationParameterTypes, graphClient: RedisGraphClient) => {
     checkRedisGraphClient(graphClient);
 
     const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.data)}), (n2:${destinationNode.label} ${destinationNode.data ? util.inspect(destinationNode.data) : ''}) CREATE (n1)-[r:${relationLabel}]->(n2)`;
 
     return graphClient.query(query)
-    .then(() => {
-        return getRelation({originNode, destinationNode, relationLabel}, graphClient);
-    });
+        .then(() => {
+            return getRelation({ originNode, destinationNode, relationLabel }, graphClient);
+        });
 };
 
-export const getRelation = async ({ originNode, destinationNode, relationLabel}: RelationParameterTypes, graphClient: RedisGraphClient) => {
+export const getRelation = async ({ originNode, destinationNode, relationLabel }: RelationParameterTypes, graphClient: RedisGraphClient) => {
     checkRedisGraphClient(graphClient);
 
     const query = `MATCH (n1:${originNode.label} ${util.inspect(originNode.data)})-[r:${relationLabel}]->(n2:${destinationNode.label} ${destinationNode.data ? util.inspect(destinationNode.data) : ''}) RETURN n1, n2, TYPE(r)`;
     return graphClient.query(query)
-    .then((res: any) => {
-        let result = {} as EstablishedRelationResult;
-        while (res.hasNext()) {
-            const record = res.next();
-            result = {
-                relationType: record.getString('TYPE(r)'),
-                originId: record.getString('n1.id'),
-                destinationId: record.getString('n2.id')
-            };
-        }
-        return result;
-    });
+        .then((res: any) => {
+            let result = {} as EstablishedRelationResult;
+            while (res.hasNext()) {
+                const record = res.next();
+                result = {
+                    relationType: record.getString('TYPE(r)'),
+                    originId: record.getString('n1.id'),
+                    destinationId: record.getString('n2.id')
+                };
+            }
+            return result;
+        });
 };
 
 // Utility function to retrieve a specified set of values from a given record set.
@@ -95,7 +95,7 @@ const getNodeValue = async (res: any, retrieveKeys: GetNodeValueArguments['keys'
     while (res.hasNext()) {
         const record = res.next();
         const getKeys = retrieveKeys || Object.keys(res);
-        result = getKeys.reduce(function(result, key) {
+        result = getKeys.reduce(function (result, key) {
             result[key] = record.getString(`n.${key}`);
             return result;
         }, {});

@@ -21,7 +21,7 @@ exports.createNode = (createNodeArguments, graphClient, retrieveKeys) => __await
 exports.getNodeByProperty = (getNodeArguments, graphClient, retrieveKeys) => __awaiter(this, void 0, void 0, function* () {
     checkRedisGraphClient(graphClient);
     const { label, data } = getNodeArguments;
-    return graphClient.query(utils_1.createGetNodeByPropertyQueryStringGenerator(label, data))
+    return graphClient.query(utils_1.createGetNodeByPropertyQueryStringGenerator(label, data, retrieveKeys))
         .then((res) => {
         return getNodeValue(res, retrieveKeys);
     });
