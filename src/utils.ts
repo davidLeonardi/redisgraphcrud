@@ -17,11 +17,11 @@ export const createNodeQueryStringGenerator = (label: CreateNodeArguments['label
 };
 
 export const createGetNodeByPropertyQueryStringGenerator = (label: GetNodeArguments['label'], data: GetNodeArguments['data'], keysToReturn: GetNodeArguments['keysToReturn']) => {
-    let keysToReturnStringList;
+    let keysToReturnStringList = '';
 
     keysToReturn.forEach((key, index, oringinalList) => {
         keysToReturnStringList = keysToReturnStringList + key;
-        if (index !== oringinalList.length) {
+        if (index !== oringinalList.length - 1) {
             keysToReturnStringList += ', ';
         }
     });

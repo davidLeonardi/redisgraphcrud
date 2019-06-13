@@ -8,12 +8,12 @@ describe('Basic Query String Generation', () => {
         chai_1.expect(producedValue).to.be.equal(`CREATE (n:testLabel { key: 'value' })`);
     });
     it('generates the correct query for node retrieval with one key', () => {
-        const producedValue = utils_1.createGetNodeByPropertyQueryStringGenerator('testLabel', { key: 'value' });
-        chai_1.expect(producedValue).to.be.equal(`MATCH (n:testLabel) WHERE (n.key = 'value') RETURN n`);
+        const producedValue = utils_1.createGetNodeByPropertyQueryStringGenerator('testLabel', { key: 'value' }, ['key']);
+        chai_1.expect(producedValue).to.be.equal(`MATCH (n:testLabel) WHERE (n.key = 'value') RETURN key`);
     });
     it('generates the correct query for node retrieval with multiple keys', () => {
-        const producedValue = utils_1.createGetNodeByPropertyQueryStringGenerator('testLabel', { key: 'value', key2: 'value2' });
-        chai_1.expect(producedValue).to.be.equal(`MATCH (n:testLabel) WHERE (n.key = 'value' AND n.key2 = 'value2') RETURN n`);
+        const producedValue = utils_1.createGetNodeByPropertyQueryStringGenerator('testLabel', { key: 'value', key2: 'value2' }, ['key', 'key2']);
+        chai_1.expect(producedValue).to.be.equal(`MATCH (n:testLabel) WHERE (n.key = 'value' AND n.key2 = 'value2') RETURN key, key2`);
     });
 });
 //# sourceMappingURL=test.js.map

@@ -6,10 +6,10 @@ exports.createNodeQueryStringGenerator = (label, data) => {
     return queryString;
 };
 exports.createGetNodeByPropertyQueryStringGenerator = (label, data, keysToReturn) => {
-    let keysToReturnStringList;
+    let keysToReturnStringList = '';
     keysToReturn.forEach((key, index, oringinalList) => {
         keysToReturnStringList = keysToReturnStringList + key;
-        if (index !== oringinalList.length) {
+        if (index !== oringinalList.length - 1) {
             keysToReturnStringList += ', ';
         }
     });
